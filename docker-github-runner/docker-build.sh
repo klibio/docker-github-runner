@@ -4,13 +4,17 @@
 set -eauo pipefail
 SCRIPT_DIR="$( cd $( dirname ${BASH_SOURCE[0]} ) >/dev/null 2>&1 && pwd )"
 
-BEARER_TOKEN=eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6InpvaFlzdFMwWWtXUkJrc0Y4NTY5V0J4NnV6OCJ9.eyJuYW1laWQiOiJkZGRkZGRkZC1kZGRkLWRkZGQtZGRkZC1kZGRkZGRkZGRkZGQiLCJzY3AiOiJBY3Rpb25zUnVudGltZS5QYWNrYWdlRG93bmxvYWQiLCJJZGVudGl0eVR5cGVDbGFpbSI6IlN5c3RlbTpTZXJ2aWNlSWRlbnRpdHkiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9zaWQiOiJERERERERERC1ERERELUREREQtRERERC1EREREREREREREREQiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3ByaW1hcnlzaWQiOiJkZGRkZGRkZC1kZGRkLWRkZGQtZGRkZC1kZGRkZGRkZGRkZGQiLCJhdWkiOiI5YmFkMjAyMS1jOTc1LTRkMGItYWZhZi00ODlmM2YyNDFmNTYiLCJzaWQiOiJiODM3ZDMxOC00NGMwLTQwMmEtOGM1OC0wODAyYjU4MzY1NTgiLCJpc3MiOiJnaXQuZGFpbWxlci5jb20iLCJhdWQiOiJnaXQuZGFpbWxlci5jb20vX3NlcnZpY2VzL3ZzdG9rZW4iLCJuYmYiOjE2NzAyNTkyMjEsImV4cCI6MTY3MDI2MzQyMX0.qc0S_deGfXjlSVxv8oAFb7SaqAGoZ-DCTm0sfyWdzHfALmpWj7bwY2kSLp14dStpiVIpSsHSZ0XsL4BavqE76YqDv0oMVrYKfUhLDPcjyjMvtceQ109dJA5yV1LfzI6ve1BVTzWcvZpwxMqCMqsAHnpqv-cv_tzjJ6XwhRhZRqE60v6OE8bQgZAI4drN__6raHTgLoG_YvwB5WSCEHRdWNKs14FgI67oaXrPSFAgWo2lDv9vlAYXlN0VrxZ2ZQzwDFLaqRMGsf7VQ8BlLzurnORh1yut4H_jleImOO2niij4pG_vQdAubJ9I--Q-Fw5R4xxCxvw7sYY3Bi_VYUQcoKDRrzYKV_JHJOy5jfPyWRknHEhUUHp_rNtHGDauCeRqWpqUWPZfDxTvvGGIShMIrlBEXKgVR2DemUPdGB0CPVSu1TdaUg5Ny5v5lGYSnmzCaRepiaNiCyjPDYqaXjm5vTu5L7SiT2Xn-wQvv1oI4CIHB0addFv-aQ5GYdS5dt7K-4WR_7LPRto8JPpC4VePfqWgodn4VQ6qYV9aHR4dbep2HzuWHhm6CGdDVKIPXXkdn1SSQl6TmHGOidK3tgkcNoggIki0UnqrRSNcNBP-ULMdDVFNAzN_QQktmKuF0l2SmgJGr1QyuiK5KC-CmuDkIUarbSUwjLayXoyiZ_FlLyU
-RUNNER_VERSION=2.289.3
+downloadUrl=$( curl -s \
+    -H "Accept: application/vnd.github+json"\
+    -H "Authorization: Bearer ${TOKEN}" \
+    https://${HOSTNAME}/orgs/${ORG}/actions/runners/downloads \
+    | jq -r '.[] | select(.os|test("linux")) | select(.architecture|test("x64")) | .download_url' )
+
+version=$(echo $downloadUrl | sed 's,.*download/v\(.*\)/.*,\1,g')
 
 docker build \
     --progress=plain \
     --no-cache \
-    --build-arg BEARER_TOKEN=${BEARER_TOKEN} \
     --build-arg RUNNER_VERSION=${RUNNER_VERSION} \
-    -t github-runner-git-daimler-com \
+    -t github-action-runner-image \
     .
