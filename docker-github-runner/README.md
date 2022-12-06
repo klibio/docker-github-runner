@@ -8,11 +8,7 @@ extract the RUNNER_VERSION from the download section e.g. `2.299.1`
 and build the container
 
 ```bash
-RUNNER_VERSION=2.299.1
-docker build \
-    --build-arg RUNNER_VERSION=${RUNNER_VERSION} \
-    --tag github-action-runner-image \
-    .
+./docker-build.sh
 ```
 
 extract the ORGANIZATION and ACCESS_TOKEN from the 'Configure' section

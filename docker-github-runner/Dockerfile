@@ -3,7 +3,7 @@ FROM ubuntu:20.04
 ENV DEBIAN_FRONTEND=noninteractive
 
 # set the github runner version
-ARG RUNNER_VERSION=2.299.1
+ARG RUNNER_VERSION
 
 # update the base packages and add a non-sudo user
 RUN apt-get update -y && apt-get upgrade -y && useradd -m docker
