@@ -1,0 +1,9 @@
+version: '3.8'
+
+services:
+    runner:
+      image: github-action-runner-image:latest
+      container_name: github-action-runner-${NAME}
+      environment:
+        ORGANIZATION: ${ORGANIZATION}
+        ACCESS_TOKEN: ${ACCESS_TOKEN}
