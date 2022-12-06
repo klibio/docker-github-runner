@@ -23,7 +23,7 @@ RUN cd /home/docker \
     && echo "# Create a folder" \
     && mkdir actions-runner && cd actions-runner \
     && echo "# Download the latest runner package" \
-    && curl -O -L https://github.com/actions/runner/releases/download/v${RUNNER_VERSION}/actions-runner-linux-x64-${RUNNER_VERSION}.tar.gz \
+    && curl -s -O -L https://github.com/actions/runner/releases/download/v${RUNNER_VERSION}/actions-runner-linux-x64-${RUNNER_VERSION}.tar.gz \
     && tar xzf ./actions-runner-linux-x64-${RUNNER_VERSION}.tar.gz
 
 RUN echo "# install some additional dependencies" \
