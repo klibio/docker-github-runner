@@ -1,9 +1,12 @@
-version: '3.8'
-
 services:
     runner:
-      image: github-action-runner-image:latest
+      image: github-action-runner-image:${TAG}
+      build:
+        context: ./docker-github-runner
+        args:
+          - RUNNER_VERSION=${RUNNER_VERSION}
+          - RUNNER_URL=${RUNNER_URL}
       container_name: github-action-runner-${NAME}
       environment:
         ORGANIZATION: ${ORGANIZATION}
-        ACCESS_TOKEN: ${ACCESS_TOKEN}
+        RUNNER_TOKEN: ${RUNNER_TOKEN}
