@@ -4,22 +4,31 @@ project for docker-github-runner and docker-compose configuration
 the github-runner contains docker so that spawning of other containers is feasible 
 (if launched with corresponding privileges)
 
-1. build the contained container image - following `docker-github-runner/README.md`
-2. configure the .env file with your orga/project and self-hosted runner token
-3. launch `docker compose up -d`
+Building is included in the docker-compose.
 
+## Usage
 
+Execute 
+```
+sh buildLocal.sh
+```
+with the environment variables `githubToken` and `repo` set.
+If you dont want to rebuild the image (which might be necessary, when changing the envvars in the compose file or the entrypoint script) you can use
+```
+sh buildLocal.sh --no-build
+```
+### Variables used
+Here is a list of the variables we used and what they are referring to. This list aims to help when adapting our solution for your own environment.
 
+- org: Github Organisation/Repository Owner
+- repo: Github Repository
+- name: \$\{org}\_${repo} - composite variable, which names the container (not the image!)
+- githubToken: Github PAT to use Github API, to list and create a new runner (inside a container)
+- runnerToken: The registration token, which the github runner uses to register with the github instance
+- runnerVersion: version of the github runnter that is downloaded, parsed inside the start script
+- tag: The tag, with which the container shall be tagged after build
 
-NAME: ORG/REPO
-ORG: Github Organisation/Repository Owner
-REPO: Github Repository
-TOKEN: Github PAT to use Github API, to list and create a new runner (inside a container)
-
-
-
-
-for now missing:
-- PAT used to create Runner Token for registration
+### ToDos or unaccessible features
 - make Host Docker accessible to the github-runner container
 - (use this repo with pipeline that uses this github-runner)
+- runner groups: enterprise only feature

@@ -1,9 +1,9 @@
 #!/bin/bash
 
-ORGANIZATION=$ORGANIZATION
-RUNNER_TOKEN=$RUNNER_TOKEN
+organization=$organization
+runnerToken=$runnerToken
 
 cd /home/docker/actions-runner
-echo "config.sh --url https://github.com/${ORGANIZATION} --token ${RUNNER_TOKEN}"
-./config.sh --url https://github.com/${ORGANIZATION} --token ${RUNNER_TOKEN}
+echo "config.sh --url https://github.com/${organization} --token ${runnerToken}"
+./config.sh --url https://github.com/${organization} --token ${runnerToken}
 ./run.sh

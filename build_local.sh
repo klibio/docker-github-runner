@@ -1,51 +1,69 @@
 #!/bin/bash
 scriptDir="$( cd $( dirname ${BASH_SOURCE[0]} ) >/dev/null 2>&1 && pwd )"
-[[ -z "${TOKEN}" ]] && echo "please provide your Github PAT token via env variable TOKEN" && exit 1
-[[ -z "${REPO}" ]] && echo "please provide a repository via env variable REPO" && exit 1
+[[ -z "${githubToken}" ]] && echo "please provide your Github PAT token via env variable token" && exit 1
+[[ -z "${repo}" ]] && echo "please provide a repository via env variable repo" && exit 1
 
-GITHOST=${GITHOST:-api.github.com}
-ORG=klibio
-TAG=latest
+# function to parse --no-build flag
+_setArgs(){
+  while [ "${1:-}" != "" ]; do
+    case "$1" in
+      "--no-build")
+        noBuild=true
+        ;;
+    esac
+    shift
+  done
+}
+
+gitHost=${gitHost:-api.github.com}
+org=klibio
+tag=latest
+
+# check arguments for no build option
+noBuild=false
+_setArgs "$@"
 
 # activate bash checks for unset vars, pipe fails
 set -eauo pipefail
 
 downloadUrl=$(curl -s \
     -H "Accept: application/vnd.github+json"\
-    -H "Authorization: Bearer ${TOKEN}" \
-    https://${GITHOST}/orgs/${ORG}/actions/runners/downloads \
+    -H "Authorization: Bearer ${githubToken}" \
+    https://${gitHost}/orgs/${org}/actions/runners/downloads \
     | jq -r '.[] | select(.os|test("linux")) | select(.architecture|test("x64")) | .download_url')
 
 runnerVersion=$(echo $downloadUrl | sed 's,.*download/v\(.*\)/.*,\1,g')
 
-RUNNER_TOKEN=$(curl -s \
+runnerToken=$(curl -s \
   -X POST \
   -H "Accept: application/vnd.github+json" \
-  -H "Authorization: Bearer ${TOKEN}"\
+  -H "Authorization: Bearer ${githubToken}"\
   -H "X-GitHub-Api-Version: 2022-11-28" \
-  https://${GITHOST}/orgs/${ORG}/actions/runners/registration-token | jq -r '.token')
+  https://${gitHost}/orgs/${org}/actions/runners/registration-token | jq -r '.token')
 
-if test -f "./.env"; then
-    echo "Found existing envFile, wont write new one";
-else
-    if [ -z ${NAME+x} ]; 
-        then echo "Envvar NAME unset, using default value 'klibio_docker-eclipse'" && NAME=klibio_docker-eclipse;
-    fi
-    if [ -z ${ORGA+x} ];
-        then echo "Envvar ORGA unset, using default value 'klibio/docker-eclipse'" && ORGA=klibio/docker-eclipse;
-    fi 
-    touch ./.env
-    cat << EOF >> ./.env
-    RUNNER_VERSION=${runnerVersion}
-    NAME=${ORG}_${REPO}
-    ORGANIZATION=${ORG}
-    RUNNER_TOKEN=${RUNNER_TOKEN}
-    RUNNER_URL=${downloadUrl}
-    TAG=${TAG}
+# removing past configuration
+if test -f ".env"; then rm ./.env; fi;
+
+#writing new configuration (as the runnerToken, might change!)
+cat << EOF >> ./.env
+runnerVersion=${runnerVersion}
+name=${org}_${repo}
+organization=${org}
+runnerToken=${runnerToken}
+runnerUrl=${downloadUrl}
+tag=${tag}
 EOF
-fi
 
 cd $scriptDir
 
+# setting plain progress reporting for easier readbility in logs
 BUILDKIT_PROGRESS=plain
-docker compose up --build
+
+# execute compose either with or without build, depending on flat.
+# default: build again
+if [ noBuild ]; then
+    docker compose up
+else
+    docker compose up --build
+fi
+

@@ -1,12 +1,12 @@
 services:
     runner:
-      image: github-action-runner-image:${TAG}
+      image: github-action-runner-image:${tag}
       build:
         context: ./docker-github-runner
         args:
-          - RUNNER_VERSION=${RUNNER_VERSION}
-          - RUNNER_URL=${RUNNER_URL}
-      container_name: github-action-runner-${NAME}
+          - runnerVersion=${runnerVersion}
+          - runnerUrl=${runnerUrl}
+      container_name: github-action-runner-${name}
       environment:
-        ORGANIZATION: ${ORGANIZATION}
-        RUNNER_TOKEN: ${RUNNER_TOKEN}
+        organization: ${organization}
+        runnerToken: ${runnerToken}

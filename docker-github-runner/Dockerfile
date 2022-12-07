@@ -3,8 +3,8 @@ FROM ubuntu:20.04
 ENV DEBIAN_FRONTEND=noninteractive
 
 # set the github runner version
-ARG RUNNER_VERSION
-ARG RUNNER_URL
+ARG runnerVersion
+ARG runnerUrl
 # update the base packages and add a non-sudo user
 RUN apt-get update -y && apt-get upgrade -y && useradd -m docker
 
@@ -23,8 +23,8 @@ RUN cd /home/docker \
     && echo "# Create a folder" \
     && mkdir actions-runner && cd actions-runner \
     && echo "# Download the latest runner package" \
-    && curl -s -O -L https://github.com/actions/runner/releases/download/v${RUNNER_VERSION}/actions-runner-linux-x64-${RUNNER_VERSION}.tar.gz \
-    && tar xzf ./actions-runner-linux-x64-${RUNNER_VERSION}.tar.gz
+    && curl -s -O -L https://github.com/actions/runner/releases/download/v${runnerVersion}/actions-runner-linux-x64-${runnerVersion}.tar.gz \
+    && tar xzf ./actions-runner-linux-x64-${runnerVersion}.tar.gz
 
 RUN echo "# install some additional dependencies" \
     && chown -R docker ~docker && /home/docker/actions-runner/bin/installdependencies.sh
