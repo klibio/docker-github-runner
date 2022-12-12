@@ -29,6 +29,9 @@ RUN cd /home/docker \
 RUN echo "# install some additional dependencies" \
     && chown -R docker ~docker && /home/docker/actions-runner/bin/installdependencies.sh
 
+RUN echo "# install docker into the container" \
+    && curl -fsSL https://get.docker.com/ | sh
+
 # copy over the start.sh script
 COPY entrypoint.sh entrypoint.sh
 

@@ -1,6 +1,6 @@
 #!/bin/bash
 scriptDir="$( cd $( dirname ${BASH_SOURCE[0]} ) >/dev/null 2>&1 && pwd )"
-[[ -z "${githubToken}" ]] && echo "please provide your Github PAT token via env variable token" && exit 1
+[[ -z "${githubToken}" ]] && echo "please provide your Github PAT token via env variable githubToken" && exit 1
 [[ -z "${repo}" ]] && echo "please provide a repository via env variable repo" && exit 1
 
 # function to parse --no-build flag

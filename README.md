@@ -9,14 +9,18 @@ Building is included in the docker-compose.
 ## Usage
 
 Execute 
-```
+
+```shell
 sh buildLocal.sh
 ```
+
 with the environment variables `githubToken` and `repo` set.
 If you dont want to rebuild the image (which might be necessary, when changing the envvars in the compose file or the entrypoint script) you can use
-```
+
+```shell
 sh buildLocal.sh --no-build
 ```
+
 ### Variables used
 Here is a list of the variables we used and what they are referring to. This list aims to help when adapting our solution for your own environment.
 
