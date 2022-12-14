@@ -26,7 +26,7 @@ Here is a list of the variables we used and what they are referring to. This lis
 
 - org: Github Organisation/Repository Owner
 - repo: Github Repository
-- name: \$\{org}\_${repo} - composite variable, which names the container (not the image!)
+- name: \$org_\$repo - composite variable, which names the container (not the image!)
 - githubToken: Github PAT to use Github API, to list and create a new runner (inside a container)
 - runnerToken: The registration token, which the github runner uses to register with the github instance
 - runnerVersion: version of the github runnter that is downloaded, parsed inside the start script

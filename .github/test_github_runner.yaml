@@ -12,4 +12,4 @@ jobs:
         run: |
           chmod +x ./build_local.sh
           ./build_local.sh
-        shell: bash1
+        shell: bash

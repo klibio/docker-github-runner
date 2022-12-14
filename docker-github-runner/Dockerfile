@@ -1,12 +1,11 @@
 # base
 FROM ubuntu:20.04
 ENV DEBIAN_FRONTEND=noninteractive
-
 # set the github runner version
 ARG runnerVersion
 ARG runnerUrl
 # update the base packages and add a non-sudo user
-RUN apt-get update -y && apt-get upgrade -y && useradd -m docker
+RUN apt-get update -y && apt-get upgrade -y && useradd -m docker && usermod -aG docker docker
 
 # update the base packages and add a non-sudo user
 RUN apt-get install -y --no-install-recommends -o Acquire::Check-Valid-Until=false \
@@ -37,6 +36,9 @@ COPY entrypoint.sh entrypoint.sh
 
 # make the script executable
 RUN chmod +x entrypoint.sh
+
+# make the docker socket accesible for all users
+#RUN chmod +x /var/run/docker.sock
 
 # since the config and run script for actions are not allowed to be run by root,
 # set the user to "docker" so all subsequent commands are run as the docker user
