@@ -14,3 +14,6 @@ jobs:
           chmod +x ./build_local.sh
           ./build_local.sh
         shell: bash
+        env:
+          githubToken: ${{ secrets.PAT_TOKEN }}
+          repo: docker-eclipse
