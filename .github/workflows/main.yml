@@ -1,0 +1,15 @@
+on:
+  push:
+    branches:
+      - main
+      - 'feature/**'
+
+jobs:
+  build:
+    steps:
+      - uses: actions/checkout@v2
+      - name: Run build script
+        run: |
+          chmod +x ./build_local.sh
+          ./build_local.sh
+        shell: bash
