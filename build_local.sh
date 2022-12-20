@@ -65,6 +65,7 @@ organization=${org}
 runnerToken=${runnerToken}
 runnerUrl=${downloadUrl}
 tag=${tag}
+repo=${repo}
 EOF
 
 cd $scriptDir
