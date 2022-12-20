@@ -12,6 +12,9 @@ _setArgs(){
     case "$1" in
       "--test-mode")
         testMode=true
+    case "$1" in
+      "-d")
+        detahed=true
         ;;
     esac
     shift
@@ -65,7 +68,15 @@ BUILDKIT_PROGRESS=plain
 # execute compose either with or without build, depending on flat.
 # default: build again
 if [ noBuild ]; then
-    docker compose up
+    if [ detached ]; then
+      docker compose up -d
+    else
+      docker compose up
+    fi
 else
-    docker compose up --build
+    if [ detached ]; then
+      docker compose up -d --build
+    else
+      docker compose up --build
+    fi
 fi
