@@ -9,11 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Run build script
+      - name: Run docker test-workflow
         run: |
-          chmod +x ./build_local.sh
-          ./build_local.sh
+          docker run hello-world
         shell: bash
-        env:
-          githubToken: ${{ secrets.PAT_TOKEN }}
-          repo: docker-eclipse

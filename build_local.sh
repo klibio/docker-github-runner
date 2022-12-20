@@ -9,6 +9,9 @@ _setArgs(){
     case "$1" in
       "--no-build")
         noBuild=true
+    case "$1" in
+      "--test-mode")
+        testMode=true
         ;;
     esac
     shift
@@ -66,4 +69,3 @@ if [ noBuild ]; then
 else
     docker compose up --build
 fi
-
