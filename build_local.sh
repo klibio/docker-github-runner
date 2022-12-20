@@ -8,16 +8,15 @@ _setArgs(){
   while [ "${1:-}" != "" ]; do
     case "$1" in
       "--no-build")
-        noBuild=true
-    case "$1" in
+        noBuild=true;;
       "--test-mode")
-        testMode=true
-    case "$1" in
+        testMode=true;;
       "-d")
-        detahed=true
-        ;;
+        detached=true;;
+      "-R")
+        repoRunner=true;;
     esac
-    shift
+    shift 1
   done
 }
 
@@ -39,13 +38,21 @@ downloadUrl=$(curl -s \
     | jq -r '.[] | select(.os|test("linux")) | select(.architecture|test("x64")) | .download_url')
 
 runnerVersion=$(echo $downloadUrl | sed 's,.*download/v\(.*\)/.*,\1,g')
-
-runnerToken=$(curl -s \
-  -X POST \
-  -H "Accept: application/vnd.github+json" \
-  -H "Authorization: Bearer ${githubToken}"\
-  -H "X-GitHub-Api-Version: 2022-11-28" \
-  https://${gitHost}/orgs/${org}/actions/runners/registration-token | jq -r '.token')
+if [ repoRunner ]; then
+  runnerToken=$(curl -s \
+    -X POST \
+    -H "Accept: application/vnd.github+json" \
+    -H "Authorization: Bearer ${githubToken}"\
+    -H "X-GitHub-Api-Version: 2022-11-28" \
+    https://${gitHost}/repos/${org}/${repo}/actions/runners/registration-token | jq -r '.token')
+else 
+  runnerToken=$(curl -s \
+    -X POST \
+    -H "Accept: application/vnd.github+json" \
+    -H "Authorization: Bearer ${githubToken}"\
+    -H "X-GitHub-Api-Version: 2022-11-28" \
+    https://${gitHost}/orgs/${org}/actions/runners/registration-token | jq -r '.token')
+fi
 
 # removing past configuration
 if test -f ".env"; then rm ./.env; fi;
