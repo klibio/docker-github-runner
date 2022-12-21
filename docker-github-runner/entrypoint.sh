@@ -1,5 +1,21 @@
 #!/bin/bash
 
+PUID=${PUID:-911}
+PGID=${PGID:-911}
+
+echo '
+-------------------------------------
+GID/UID
+-------------------------------------'
+echo "
+User uid:    $(id -u docker)
+User gid:    $(id -g docker)
+-------------------------------------
+"
+
+groupmod -o -g "$PGID" docker
+usermod -o -u "$PUID" docker
+
 organization=$organization
 runnerToken=$runnerToken
 repo=$repo

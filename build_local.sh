@@ -66,8 +66,10 @@ runnerToken=${runnerToken}
 runnerUrl=${downloadUrl}
 tag=${tag}
 repo=${repo}
+PUID=$(id -u)
+GUID=$(id -g)
 EOF
-
+#TODO: grep docker group id
 cd $scriptDir
 
 # setting plain progress reporting for easier readbility in logs
