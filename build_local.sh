@@ -31,6 +31,23 @@ _setArgs "$@"
 # activate bash checks for unset vars, pipe fails
 set -eauo pipefail
 
+#fetching token for the runner downloads
+if [ repoRunner ]; then
+  runnerToken=$(curl -s \
+    -X POST \
+    -H "Accept: application/vnd.github+json" \
+    -H "Authorization: Bearer ${githubToken}"\
+    -H "X-GitHub-Api-Version: 2022-11-28" \
+    https://${gitHost}/repos/${organization}/${repo}/actions/runners/registration-token | jq -r '.token')
+else 
+  runnerToken=$(curl -s \
+    -X POST \
+    -H "Accept: application/vnd.github+json" \
+    -H "Authorization: Bearer ${githubToken}"\
+    -H "X-GitHub-Api-Version: 2022-11-28" \
+    https://${gitHost}/orgs/${organization}/actions/runners/registration-token | jq -r '.token')
+fi
+
 downloadUrl=$(curl -s \
     -H "Accept: application/vnd.github+json"\
     -H "Authorization: Bearer ${githubToken}" \
@@ -38,21 +55,6 @@ downloadUrl=$(curl -s \
     | jq -r '.[] | select(.os|test("linux")) | select(.architecture|test("x64")) | .download_url')
 
 runnerVersion=$(echo $downloadUrl | sed 's,.*download/v\(.*\)/.*,\1,g')
-if [ repoRunner ]; then
-  runnerToken=$(curl -s \
-    -X POST \
-    -H "Accept: application/vnd.github+json" \
-    -H "Authorization: Bearer ${githubToken}"\
-    -H "X-GitHub-Api-Version: 2022-11-28" \
-    https://${gitHost}/repos/${org}/${repo}/actions/runners/registration-token | jq -r '.token')
-else 
-  runnerToken=$(curl -s \
-    -X POST \
-    -H "Accept: application/vnd.github+json" \
-    -H "Authorization: Bearer ${githubToken}"\
-    -H "X-GitHub-Api-Version: 2022-11-28" \
-    https://${gitHost}/orgs/${org}/actions/runners/registration-token | jq -r '.token')
-fi
 
 # removing past configuration
 if test -f ".env"; then rm ./.env; fi;
@@ -62,12 +64,13 @@ cat << EOF >> ./.env
 runnerVersion=${runnerVersion}
 name=${org}_${repo}
 organization=${org}
-runnerToken=${runnerToken}
 runnerUrl=${downloadUrl}
 tag=${tag}
 repo=${repo}
 PUID=$(id -u)
 GUID=$(id -g)
+repoRunner=$(repoRunner)
+githubToken=$(githubToken)
 EOF
 #TODO: grep docker group id
 cd $scriptDir
