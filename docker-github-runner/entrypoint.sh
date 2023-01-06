@@ -29,9 +29,9 @@ if [ repoRunner ]; then
   Runnerconfiguration
   -------------------------------------'
   echo "
-  GitHost:         $(gitHost)
-  Organisation:    $(organization)
-  Repository:      $(repo)
+  GitHost:         ${gitHost}
+  Organisation:    ${organization}
+  Repository:      ${repo}
   -------------------------------------
   "
   runnerToken=$(curl -s \
@@ -50,7 +50,7 @@ else
 fi
 
 #remove githubToken, so it cannot be printed when accessing the container
-githubToken="REMOVED"
+githubToken=""
 
 cd /home/docker/actions-runner
 if [ repoRunner ]; then

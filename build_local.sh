@@ -21,11 +21,15 @@ _setArgs(){
 }
 
 gitHost=${gitHost:-api.github.com}
-org=klibio
+organization=klibio
 tag=latest
 
 # check arguments for no build option
 noBuild=false
+repoRunner=false
+detached=false
+testMode=false
+
 _setArgs "$@"
 
 # activate bash checks for unset vars, pipe fails
@@ -51,7 +55,7 @@ fi
 downloadUrl=$(curl -s \
     -H "Accept: application/vnd.github+json"\
     -H "Authorization: Bearer ${githubToken}" \
-    https://${gitHost}/orgs/${org}/actions/runners/downloads \
+    https://${gitHost}/orgs/${organization}/actions/runners/downloads \
     | jq -r '.[] | select(.os|test("linux")) | select(.architecture|test("x64")) | .download_url')
 
 runnerVersion=$(echo $downloadUrl | sed 's,.*download/v\(.*\)/.*,\1,g')
@@ -62,15 +66,15 @@ if test -f ".env"; then rm ./.env; fi;
 #writing new configuration (as the runnerToken, might change!)
 cat << EOF >> ./.env
 runnerVersion=${runnerVersion}
-name=${org}_${repo}
-organization=${org}
+name=${organization}_${repo}
+organization=${organization}
 runnerUrl=${downloadUrl}
 tag=${tag}
 repo=${repo}
 PUID=$(id -u)
 GUID=$(id -g)
-repoRunner=$(repoRunner)
-githubToken=$(githubToken)
+repoRunner=${repoRunner}
+githubToken=${githubToken}
 EOF
 #TODO: grep docker group id
 cd $scriptDir
